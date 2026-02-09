@@ -18,6 +18,15 @@ export interface formatQuestion extends Question {
   all_answers: string[];
 }
 
+export interface QuizHistory {
+  date: string;       // Tanggal pengerjaan (ISO string)
+  score: {
+    correct: number;
+    incorrect: number;
+    total: number;
+  };
+}
+
 export interface QuizState {
   // Data User & Kuis
   user: string | null;
@@ -29,6 +38,8 @@ export interface QuizState {
     incorrect: number;
     total: number;
   };
+  history: QuizHistory[]; // Riwayat hasil kuis
+  
   // Status Aplikasi
   status: "idle" | "loading" | "active" | "finished";
   // Timer per soal (detik)
@@ -37,7 +48,7 @@ export interface QuizState {
   // Aksi
   setUser: (name: string) => void;
   setQuestions: (questions: formatQuestion[]) => void;
-  fetchQuestions: (amount?: number, difficulty?: string) => Promise<void>;
+  fetchQuestions: (amount?: number, difficulty?: string, category?: string, type?: string) => Promise<void>;
   answerQuestion: (answer: string) => void;
   nextQuestion: () => void;
   finishQuiz: () => void;

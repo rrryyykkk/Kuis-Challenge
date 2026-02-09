@@ -1,7 +1,13 @@
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useQuizStore } from '@/store/useQuizStore';
-import type { formatQuestion } from '@/types';
+import { motion } from "framer-motion";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useQuizStore } from "@/store/useQuizStore";
+import type { formatQuestion } from "@/types";
 
 interface QuestionCardProps {
   question: formatQuestion;
@@ -11,14 +17,12 @@ interface QuestionCardProps {
   selectedAnswer?: string;
 }
 
-
-
-const QuestionCard: React.FC<QuestionCardProps> = ({ 
-  question, 
-  currentQuestionIndex, 
-  totalQuestions, 
+const QuestionCard: React.FC<QuestionCardProps> = ({
+  question,
+  currentQuestionIndex,
+  totalQuestions,
   onAnswer,
-  selectedAnswer 
+  selectedAnswer,
 }) => {
   return (
     <motion.div
@@ -32,10 +36,13 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
       <Card className="backdrop-blur-xl bg-white/10 border-white/20 text-white shadow-2xl">
         <CardHeader>
           <div className="flex justify-between items-center text-gray-300 mb-2">
-            <span className="text-sm font-medium uppercase tracking-wider">{question.category}</span>
+            <span className="text-sm font-medium uppercase tracking-wider">
+              {question.category}
+            </span>
             <div className="flex gap-3">
               <span className="text-sm font-medium bg-white/10 px-3 py-1 rounded-full">
-                Dijawab: {Object.keys(useQuizStore.getState().userAnswers).length}
+                Dijawab:{" "}
+                {Object.keys(useQuizStore.getState().userAnswers).length}
               </span>
               <span className="text-sm font-medium bg-white/10 px-3 py-1 rounded-full">
                 Soal {currentQuestionIndex + 1} / {totalQuestions}
@@ -56,9 +63,11 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
                 onClick={() => onAnswer(answer)}
                 className={`
                   text-left p-4 rounded-xl border-2 transition-all duration-200 font-medium text-lg
-                  ${selectedAnswer === answer 
-                    ? 'border-violet-500 bg-violet-500/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]' 
-                    : 'border-white/10 bg-black/20 text-gray-100 hover:bg-white/10 hover:border-white/30'}
+                  ${
+                    selectedAnswer === answer
+                      ? "border-violet-500 bg-violet-500/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]"
+                      : "border-white/10 bg-black/20 text-gray-100 hover:bg-white/10 hover:border-white/30"
+                  }
                 `}
               >
                 {answer}

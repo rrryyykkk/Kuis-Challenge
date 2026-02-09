@@ -1,20 +1,21 @@
-// Import the functions you need from the SDKs you need
+// Import fungsi yang dibutuhkan dari SDK Firebase
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth } from "firebase/auth";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Konfigurasi Firebase Anda
+// PENTING: Ganti nilai-nilai di bawah ini dengan konfigurasi dari Firebase Console Anda
 const firebaseConfig = {
-  apiKey: "AIzaSyCJ7Z_AOz5OwM1UTt34N8R05HJHtl49sIA",
-  authDomain: "challenge-quiz-9be13.firebaseapp.com",
-  projectId: "challenge-quiz-9be13",
-  storageBucket: "challenge-quiz-9be13.firebasestorage.app",
-  messagingSenderId: "802203838806",
-  appId: "1:802203838806:web:a6343beca9a4a85b87cef7",
-  measurementId: "G-GBHQ4C64PD"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STRORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSANGER_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
+  measurementId: import.meta.env.VITE_MEASURENMENT_ID,
 };
 
-// Initialize Firebase
+// Inisialisasi Firebase
 const app = initializeApp(firebaseConfig);
-export default app
+
+// Inisialisasi Authentication
+export const auth = getAuth(app);

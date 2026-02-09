@@ -1,19 +1,49 @@
-import type { formatQuestion, Question } from '../types';
+import type { formatQuestion, Question } from "../types";
+
+// Fungsi untuk mengambil daftar kategori
+export const fetchCategories = async (): Promise<
+  { id: number; name: string }[]
+> => {
+  try {
+    const response = await fetch(import.meta.env.VITE_API_QUIZ);
+    const data = await response.json();
+    return data.trivia_categories;
+  } catch (error) {
+    console.error("Gagal mengambil kategori:", error);
+    return [];
+  }
+};
 
 // Fungsi untuk mengambil pertanyaan dari OpenTDB API
-export const fetchQuizQuestions = async (amount: number = 10, difficulty: string = 'easy'): Promise<formatQuestion[]> => {
-  // CATATAN PENTING:
-  // API OpenTDB tidak mendukung bahasa Indonesia secara native.
-  // URL ini hardcode category=20 (Mythology) dan encode=url3986 sesuai permintaan.
-  const endpoint = `https://opentdb.com/api.php?amount=${amount}&category=20&difficulty=${difficulty}&type=multiple&encode=url3986`;
-  
+export const fetchQuizQuestions = async (
+  amount: number = 10,
+  difficulty: string = "easy",
+  category: string = "", // Kosong berarti semua kategori
+  type: string = "", // Kosong berarti semua tipe
+): Promise<formatQuestion[]> => {
+  // Bangun URL dengan parameter dinamis
+  let endpoint = `${import.meta.env.VITE_API_ENDPOINT}?amount=${amount}&encode=url3986`;
+
+  if (category) endpoint += `&category=${category}`;
+  if (difficulty && difficulty !== "any")
+    endpoint += `&difficulty=${difficulty}`;
+  if (type && type !== "any") endpoint += `&type=${type}`;
+
   try {
     const response = await fetch(endpoint);
     const data = await response.json();
-    
+
     // Cek response code dari OpenTDB (0 artinya sukses)
     if (data.response_code !== 0) {
-      throw new Error('Gagal mengambil pertanyaan dari OpenTDB');
+      // Code 1: No Results (mungkin kombinasi filter tidak ada soalnya)
+      if (data.response_code === 1) {
+        throw new Error(
+          "Tidak ada soal dengan kriteria tersebut. Coba kurangi jumlah soal atau ubah filter.",
+        );
+      }
+      throw new Error(
+        `Gagal mengambil pertanyaan dari OpenTDB (Code: ${data.response_code})`,
+      );
     }
 
     // Mapping hasil data API ke format yang kita butuhkan
@@ -27,7 +57,11 @@ export const fetchQuizQuestions = async (amount: number = 10, difficulty: string
       // Tambahkan ID unik untuk setiap pertanyaan (penting untuk React key)
       id: crypto.randomUUID(),
       // Acak urutan jawaban agar kunci jawaban tidak selalu di posisi yang sama
-      all_answers: shuffleArray([...question.incorrect_answers, question.correct_answer].map(decodeURIComponent)),
+      all_answers: shuffleArray(
+        [...question.incorrect_answers, question.correct_answer].map(
+          decodeURIComponent,
+        ),
+      ),
     }));
   } catch (error) {
     console.error("API Fetch Error:", error);
@@ -36,6 +70,6 @@ export const fetchQuizQuestions = async (amount: number = 10, difficulty: string
 };
 
 // Fungsi utilitas untuk mengacak array (Fisher-Yates shuffle versi sederhana)
-const shuffleArray = (array: any[]) => {
+const shuffleArray = <T>(array: T[]): T[] => {
   return array.sort(() => Math.random() - 0.5);
 };
